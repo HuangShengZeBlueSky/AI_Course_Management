@@ -132,6 +132,17 @@ def safe(s: object) -> str:
 def build_table_rows(items: list[dict], week_value: str) -> list[list[str]]:
     rows: list[tuple[str, float, list[str]]] = []
 
+    mode = os.getenv("MODE", "window").strip().lower()  # window | week
+    include_unscheduled = os.getenv("INCLUDE_UNSCHEDULED", "1").strip() not in {"0", "false", "no"}
+    try:
+        window_days = int(os.getenv("WINDOW_DAYS", "7").strip() or "7")
+    except Exception:
+        window_days = 7
+    window_days = max(1, min(window_days, 31))
+    today = datetime.date.today()
+    window_start = today
+    window_end = today + datetime.timedelta(days=window_days - 1)
+
     for item in items:
         fields = extract_field_map(item)
 
@@ -142,17 +153,33 @@ def build_table_rows(items: list[dict], week_value: str) -> list[list[str]]:
         lesson_no = get_first(fields, ["LessonNo", "课次", "第几次", "序号"]) 
         materials = safe(get_first(fields, ["Materials", "课件/代码", "资料链接", "腾讯会议链接"]))
 
-        # 周次筛选：优先使用 Week 字段；否则用授课日期推算 ISO 周
-        if week:
-            if week != week_value:
-                continue
+        d = parse_date(date_raw)
+        computed_week = iso_week_string(d) if d else ""
+
+        # 选择规则：
+        # - mode=window：展示未来 window_days 天内的课程；没有日期/日期不可解析的条目可选显示为“待定”
+        # - mode=week：按 ISO 周过滤（week_value），优先 Week 字段，否则用日期推算
+        if mode == "week":
+            if week:
+                if week != week_value:
+                    continue
+            elif computed_week:
+                if computed_week != week_value:
+                    continue
+                week = computed_week
+            else:
+                if not include_unscheduled:
+                    continue
+                week = "待定"
         else:
-            d = parse_date(date_raw)
-            if not d:
-                continue
-            week = iso_week_string(d)
-            if week != week_value:
-                continue
+            if d:
+                if not (window_start <= d <= window_end):
+                    continue
+                week = week or computed_week
+            else:
+                if not include_unscheduled:
+                    continue
+                week = week or "待定"
 
         date = date_raw
         try:

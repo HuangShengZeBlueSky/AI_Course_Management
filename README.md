@@ -23,7 +23,8 @@
 > 仅展示课程主题与备课状态；不在公开页面记录学员姓名与收款信息。
 
 <!-- WEEKLY_SCHEDULE_START -->
-> 本表由 GitHub Actions 从 Projects 自动生成；请在看板里维护（字段：Week/Date/LessonNo/Topic/Status/Materials）。
+> 本表由 GitHub Actions 从 Projects 自动生成；请在看板里维护字段：`Status`、`主题`、`授课时间`、`腾讯会议链接`（可选）、（可选）`课次`。
+> 默认展示“未来 7 天”的课程；如果你更想按 ISO 周筛选，可在工作流里把 `MODE` 改为 `week`。
 
 | 周次 | 日期 | 课次 | 主题 | 备课状态 | 课件/代码 |
 | --- | --- | ---: | --- | --- | --- |

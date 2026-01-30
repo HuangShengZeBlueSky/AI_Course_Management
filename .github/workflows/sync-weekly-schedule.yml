@@ -26,6 +26,9 @@ jobs:
           PROJECT_OWNER: HuangShengZeBlueSky
           PROJECT_NUMBER: "1"
           README_PATH: README.md
+          # window: 默认展示未来 N 天；week: 按 ISO 周筛选（用 WEEK 指定）
+          MODE: window
+          WINDOW_DAYS: "7"
           # 推荐：在仓库 Secrets 新建 PROJECTS_TOKEN（需要 read:project 权限）
           PROJECTS_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
