@@ -11,6 +11,25 @@ def iso_week_string(d: datetime.date) -> str:
     return f"{year}-W{week:02d}"
 
 
+def parse_date(value: str) -> datetime.date | None:
+    v = (value or "").strip()
+    if not v:
+        return None
+    for fmt in ("%Y-%m-%d", "%Y/%m/%d", "%Y.%m.%d"):
+        try:
+            return datetime.datetime.strptime(v, fmt).date()
+        except Exception:
+            pass
+    return None
+
+
+def get_first(fields: dict, names: list[str]) -> object | None:
+    for n in names:
+        if n in fields and fields[n] not in (None, ""):
+            return fields[n]
+    return None
+
+
 def http_post_json(url: str, payload: dict, token: str) -> dict:
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(url, data=data, method="POST")
@@ -67,14 +86,14 @@ def status_icon(status: str | None) -> str:
     if not status:
         return "⬜ 未开始"
     s = status.strip().lower()
+    if s in {"todo", "backlog", "to do"}:
+        return "⬜ 未开始"
     if s in {"preparing", "in progress", "doing"}:
         return "🟨 备课中"
     if s in {"ready", "review", "blocked"}:
         return "🟦 可上课"
     if s in {"done", "completed"}:
         return "🟩 已完成"
-    if s in {"backlog", "todo"}:
-        return "⬜ 未开始"
     return status
 
 
@@ -90,20 +109,32 @@ def build_table_rows(items: list[dict], week_value: str) -> list[list[str]]:
     for item in items:
         fields = extract_field_map(item)
 
-        week = safe(fields.get("Week"))
-        if week != week_value:
-            continue
+        # 兼容字段名：英文 + 中文
+        week = safe(get_first(fields, ["Week", "周次"]))
+        date_raw = safe(get_first(fields, ["Date", "授课时间", "授课日期", "日期"]))
+        topic = safe(get_first(fields, ["Topic", "主题"]))
+        lesson_no = get_first(fields, ["LessonNo", "课次", "第几次", "序号"]) 
+        materials = safe(get_first(fields, ["Materials", "课件/代码", "资料链接", "腾讯会议链接"]))
 
-        date = safe(fields.get("Date"))
-        lesson_no = fields.get("LessonNo")
+        # 周次筛选：优先使用 Week 字段；否则用授课日期推算 ISO 周
+        if week:
+            if week != week_value:
+                continue
+        else:
+            d = parse_date(date_raw)
+            if not d:
+                continue
+            week = iso_week_string(d)
+            if week != week_value:
+                continue
+
+        date = date_raw
         try:
             lesson_no_num = float(lesson_no) if lesson_no is not None else float("inf")
         except Exception:
             lesson_no_num = float("inf")
 
-        topic = safe(fields.get("Topic"))
-        status = safe(fields.get("Status"))
-        materials = safe(fields.get("Materials"))
+        status = safe(get_first(fields, ["Status", "状态"]))
 
         if not topic:
             content = item.get("content") or {}
