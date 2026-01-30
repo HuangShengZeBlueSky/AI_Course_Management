@@ -4,11 +4,13 @@
 
 模块目录：
 
+- `projects/fundamentals/`（基础知识）
+- `projects/llm/`（大模型 LLM）
+- `projects/ml/`
 - `projects/cv/`
 - `projects/nlp/`
-- `projects/ml/`
-- `projects/agent-tools/`
 - `projects/rag/`
+- `projects/agent-tools/`
 
 每个模块目录至少保留：
 

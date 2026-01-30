@@ -1,218 +1,87 @@
-# AI_Course_Management
+# AI Course Management（项目化课程仓库）
 
-https://github.com/users/HuangShengZeBlueSky/projects/1
+本仓库用于公开展示课程路线、项目列表、每周安排与备课进度；课程以“项目”为单位推进，代码与资料沉淀在仓库中。
 
-用 GitHub 把课程“项目化”管理：
+**课程看板（本周课表/备课进度）**：
 
-- 学员能实时看到：本周上什么、你的备课进度、资料链接
-- 你能清晰记录：每次上课内容、作业、回放/课件、以及课次/金额统计
-
-> 说明：纯 Markdown 本身不会自动计算“剩余课次/金额”。但可以用「固定表格 + 每次课后一行记录」做到稳定可维护；后续如需“自动统计”，可以再加 GitHub Actions（我也可以帮你补上）。
+- https://github.com/users/HuangShengZeBlueSky/projects/1
 
 ---
 
-## 1. 课次与金额（40/次）统计
+## 我们学什么
 
-### 1.1 学员课次总表（手动维护，最稳）
-
-| 学员 | 已购课次 | 已上课次 | 剩余课次 | 单价(元/次) | 已收(元) | 备注 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| （示例）张三 | 10 | 3 | 7 | 40 | 400 | 赠送 1 次：已计入已购课次 |
-| （示例）李四 | 5 | 5 | 0 | 40 | 200 | 结课 |
-
-维护规则（建议统一口径，避免对不上）：
-
-- **已购课次**：收款对应的总课次数（含赠送/补课，建议都计入）
-- **已上课次**：每上一次课 +1（以下“课程记录”会有证据链）
-- **剩余课次**：已购课次 - 已上课次
-- **已收**：已购课次 × 40（如有折扣可在备注写清）
-
-### 1.2 每次课程记录（建议必填，一次课一行）
-
-| 日期 | 第几次 | 学员 | 主题/项目 | 本次目标 | 课后作业 | 资料/代码链接 | 备注 |
-| --- | ---: | --- | --- | --- | --- | --- | --- |
-| 2026-02-01 | 1 | 张三 | Python 基础 | 会用 venv、写函数 | 完成 20 道练习 | （待补） | |
-
-你只要坚持维护这个表，**统计就不会丢**；学员也能回看每次课做了什么。
-
-### 1.3（可选）“动态统计”的 GitHub 做法（后续再上自动化）
-
-如果你希望自动统计（例如：自动统计本周已上几次课、每位学员已上次数、剩余次数），推荐两种 GitHub 原生思路：
-
-1) **GitHub Projects 看板 + 自定义字段**
-- 每节课创建一条卡片（Lesson）
-- 字段：学员、日期、是否完成、主题、资料链接
-- 看板天然展示“本周要上什么”与“备课进度”
-
-2) **Issues 作为课次流水 + Actions 自动回写 README**
-- 每次课创建一个 Issue（模板固定字段）
-- 用 label 标记：`lesson`、`prepared`、`done`
-- GitHub Actions 定时抓取 Issues，生成统计表并写回 README
+- AI 基本知识、Python 基本知识
+- 环境管理 / 开发工具 / Git / AI 辅助学习与编程
+- 项目模块：CV、NLP、ML、Agent+工具调用、RAG
+- 论文复现、实验与论文写作练习
+- 不定期嘉宾专题
 
 ---
 
-## 2. 本周课程安排与备课进度（给学员看的“实时页面”）
+## 本周安排（对外展示）
 
-### 2.1 本周总览
+> 仅展示课程主题与备课状态；不在公开页面记录学员姓名与收款信息。
 
-> 你可以把状态当作备课看板：
-> - `⬜ 未开始` / `🟨 备课中` / `🟩 已完成`（也可直接写“未开始/备课中/已完成”）
-
-| 周次 | 日期 | 课次 | 主题 | 主要内容 | 备课状态 | 课件/代码 | 备注 |
-| --- | --- | ---: | --- | --- | --- | --- | --- |
-| 2026-W06 | 2026-02-02 | 1 | AI 与 Python 入门 | AI 基本概念、Python 环境 | 🟨 备课中 | （待补） | |
-| 2026-W06 | 2026-02-04 | 2 | Git 与协作 | 分支/PR/Issue 工作流 | ⬜ 未开始 | （待补） | |
-
-### 2.2 备课清单（你自己用，学员也能看到进度）
-
-- [ ] 本周课件大纲（目录 + 讲解顺序）
-- [ ] 代码示例（可运行、含注释/README）
-- [ ] 练习题（基础/进阶各 5 题）
-- [ ] 作业验收标准（rubric）
-- [ ] 参考资料（链接 + 推荐阅读顺序）
+| 周次 | 日期 | 课次 | 主题 | 备课状态 | 课件/代码 |
+| --- | --- | ---: | --- | --- | --- |
+| 2026-W06 | 2026-02-02 | 1 | AI 与 Python 入门 | 🟨 备课中 | （待补） |
+| 2026-W06 | 2026-02-04 | 2 | Git 与协作（项目化工作流） | ⬜ 未开始 | （待补） |
 
 ---
 
-## 3. 课程大纲（项目驱动）
+## 项目列表（按项目推进）
 
-### 3.1 基础模块
+建议学习路径：基础 → ML → CV/NLP → LLM → RAG → Agent。
 
-1) **AI 基本知识**
-- 机器学习 vs 深度学习 vs 生成式 AI
-- 数据、特征、损失函数、训练/验证/测试
-- 过拟合、偏差-方差、评估指标
-
-2) **Python 基本知识**
-- 语法、函数、类、异常、迭代器
-- 常用库：`numpy` / `pandas` / `matplotlib`
-- 工程化：模块组织、日志、配置、类型标注（按需）
-
-### 3.2 环境管理/开发工具/Git/AI 辅助
-
-- 环境管理：conda/venv、依赖锁定、可复现运行
-- 开发工具：VS Code、调试、单测、格式化
-- Git：分支策略、PR、Code Review、Issue 驱动开发
-- AI 辅助学习与编程：如何提问、如何验收、如何防止“幻觉”
-
-### 3.3 项目模块（每个模块一个项目仓库/目录）
-
-1) **CV 项目**
-- 数据集准备、图像预处理、训练/评估
-- 可选方向：分类、检测、分割
-
-2) **NLP 项目**
-- 文本清洗、分词/向量化、训练/评估
-- 可选方向：分类、实体识别、文本生成（按难度）
-
-3) **ML 项目（传统机器学习）**
-- 特征工程、模型选择、调参、可解释性
-
-4) **Agent + 工具调用项目**
-- 任务拆解、工具接口设计、日志与可观测
-- 可选：网页抓取、文件读写、数据库/向量库
-
-5) **RAG 项目**
-- 文档切分、向量检索、重排序、评估
-- 关注：幻觉、引用、可追溯、成本控制
-
-### 3.4 论文复现 / 实验 / 写作训练
-
-- 选题：从“能复现”到“能改进”
-- 实验：对照组、消融实验、指标与图表
-- 写作：结构、related work、实验描述与结论
-
-### 3.5 嘉宾专题（不定期）
-
-- 工程落地、模型优化、数据标注与评估、行业案例等
+- [基础知识模块](projects/fundamentals/README.md)
+- [大模型 LLM 模块](projects/llm/README.md)
+- [ML（传统机器学习）项目](projects/ml/README.md)
+- [CV 项目](projects/cv/README.md)
+- [NLP 项目](projects/nlp/README.md)
+- [RAG 项目](projects/rag/README.md)
+- [Agent + 工具调用项目](projects/agent-tools/README.md)
 
 ---
 
-## 4. GitHub 使用方式（建议工作流）
+## 收费方式（按“项目”收费）
 
-学员如何参与：
+如果你不是按“课次”收费，而是按“项目包”收费，建议用下面这种对外口径：
 
-- 课程问题：开 Issue（标题写清楚 + 复现步骤/截图/代码）
-- 课后作业：用 PR 提交（你可以逐行 Review）
-- 公告/每周安排：更新本 README 的“本周总览”表
+- **一个项目 = 一个交付包**：项目目标、里程碑、作业与验收标准、代码评审/答疑范围
+- **收费与访问权限绑定到项目**：付费后获得该项目资料的访问权限（见下方“权限与隐私”）
 
-你作为老师如何管理：
+可选的项目包字段（你可以在每个项目 README 里加一段“交付与验收”）：
 
-- 每次课：在“课程记录”追加一行，并把资料链接补齐
-- 每周：更新“本周总览”，把备课状态从 ⬜ → 🟨 → 🟩
+- 周期（例如 2~4 周）
+- 交付物（代码仓库、报告、展示 demo）
+- 验收方式（PR review、指标、演示）
 
----
+更细的“权限设置/如何给学员开权限”见：
 
-## 5. 仓库结构（后续你扩展时用）
-
-建议逐步长成这样：
-
-- `syllabus/`：大纲与每周计划
-- `lessons/`：每节课的课件与代码
-- `projects/`：CV/NLP/ML/Agent/RAG 项目
-- `assignments/`：作业与验收标准
-
-快速入口：
-
-- [syllabus/README.md](syllabus/README.md)
-- [syllabus/roadmap.md](syllabus/roadmap.md)
-- [syllabus/week-plan.template.md](syllabus/week-plan.template.md)
-- [lessons/README.md](lessons/README.md)
-- [lessons/_template/lesson.template.md](lessons/_template/lesson.template.md)
-- [projects/README.md](projects/README.md)
-- [assignments/README.md](assignments/README.md)
-- [assignments/_template/rubric.template.md](assignments/_template/rubric.template.md)
-- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [docs/pricing-and-access.md](docs/pricing-and-access.md)
 
 ---
 
-## 6. GitHub Projects 看板（公开课表 + 备课进度）
+## 权限与隐私（重要）
 
-目标：让学员打开 GitHub 就能看到“本周上什么”和“备课到哪了”。
+- 本仓库建议作为 **公开主页**：展示路线图、项目列表、本周安排、公开资料。
+- 任何包含学员信息/收款记录/私密课件/答案的内容，建议放到 **私有仓库** 或私有组织项目中。
 
-### 6.1 建议的看板数据模型
+具体怎么做（GitHub 协作者/组织团队/按项目开权限），见：
 
-把 **每一节课** 当作一个条目（item）。你可以用 Projects 的表格/看板视图来管理。
+- [docs/pricing-and-access.md](docs/pricing-and-access.md)
 
-建议字段（Project settings → Fields）：
+---
 
-- `Status`（状态）：`Backlog` / `Preparing` / `Ready` / `Done`
-- `Week`（文本）：如 `2026-W06`
-- `Date`（日期）：上课日期
-- `LessonNo`（数字）：第几次课
-- `Topic`（文本）：主题
-- `Materials`（文本或链接）：课件/代码链接（可填 lessons 路径或 PR）
+## 资料与协作
 
-建议视图（Views）：
-
-- **This Week（表格）**：过滤 `Week == 当前周`
-- **Preparation（看板）**：按 `Status` 分列，方便展示备课流
-- **Done（表格）**：过滤 `Status == Done`
-
-### 6.2 建议的工作方式（最省心）
-
-1) 每周一：
-- 在 README 的“本周总览”先排好两节课（或更多）
-- 在 Projects 创建对应条目，`Status=Preparing`
-
-2) 备课推进：
-- 课件/代码放到 `lessons/YYYY-WXX-lesson-XX/`
-- 当课件能讲、代码能跑：把该条目状态改为 `Ready`
-
-3) 上完课：
-- 在 README 的“每次课程记录”追加一行
-- Projects 该条目改为 `Done`
-- 把 `Materials` 字段补上最终链接（lesson 目录、PR、或 Release）
-
-### 6.3 如何创建（操作步骤）
-
-在 GitHub 网页端：
-
-- 进入你的仓库 → 顶部 `Projects` → `New project`
-- 选择 `Board`（看板）或 `Table`（表格）都行（建议都建视图）
-- 进入项目设置添加字段（见 6.1）
-- 把项目设置为 Public（如果你希望学员无需登录也能看）
-
-完成后，把 Projects 链接贴到这里（建议放仓库置顶位置）：
-
-- 本课程 Projects 看板链接：（待你粘贴）
+- 路线图与每周计划：
+	- [syllabus/roadmap.md](syllabus/roadmap.md)
+	- [syllabus/week-plan.template.md](syllabus/week-plan.template.md)
+- 每节课课件与代码沉淀：
+	- [lessons/README.md](lessons/README.md)
+- 作业与验收标准：
+	- [assignments/README.md](assignments/README.md)
+- 协作方式：
+	- [CONTRIBUTING.md](CONTRIBUTING.md)
 
