@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import urllib.request
+import urllib.error
 
 
 def iso_week_string(d: datetime.date) -> str:
@@ -38,9 +39,34 @@ def http_post_json(url: str, payload: dict, token: str) -> dict:
     req.add_header("User-Agent", "ai-course-sync-script")
     if token:
         req.add_header("Authorization", f"Bearer {token}")
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        body = resp.read().decode("utf-8")
-    return json.loads(body)
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            body = resp.read().decode("utf-8")
+        return json.loads(body)
+    except urllib.error.HTTPError as e:
+        err_body = ""
+        try:
+            err_body = e.read().decode("utf-8")
+        except Exception:
+            err_body = ""
+
+        hint = ""
+        if e.code == 401:
+            hint = (
+                "\nHint: 401 Unauthorized 通常表示 token 无效/过期/粘贴错误。"
+                "\n- 确认仓库 Secrets 里 `PROJECTS_TOKEN` 已设置且没有多余空格/换行"
+                "\n- 建议使用 classic PAT，并勾选 `read:project` 权限（fine-grained PAT 有时会踩权限边界）"
+            )
+        elif e.code == 403:
+            hint = (
+                "\nHint: 403 Forbidden 通常表示权限不足或被限流。"
+                "\n- 确认 token 至少有 `read:project`"
+                "\n- 若是 rate limit，请稍后重试或改用 PAT（不要只用 GITHUB_TOKEN）"
+            )
+
+        raise RuntimeError(
+            f"HTTP Error {e.code}: {e.reason}\nResponse: {err_body}{hint}"
+        ) from e
 
 
 def gh_graphql(query: str, variables: dict, token: str) -> dict:
@@ -201,12 +227,25 @@ def main() -> int:
         print("PROJECT_NUMBER must be int", file=sys.stderr)
         return 2
 
-    token = (
-        os.getenv("PROJECTS_TOKEN")
-        or os.getenv("GH_TOKEN")
-        or os.getenv("GITHUB_TOKEN")
-        or ""
-    ).strip()
+    token_source = ""
+    token = os.getenv("PROJECTS_TOKEN", "").strip()
+    if token:
+        token_source = "PROJECTS_TOKEN"
+    else:
+        token = os.getenv("GH_TOKEN", "").strip()
+        if token:
+            token_source = "GH_TOKEN"
+        else:
+            token = os.getenv("GITHUB_TOKEN", "").strip()
+            if token:
+                token_source = "GITHUB_TOKEN"
+
+    if not token:
+        print(
+            "Missing token. Set repository secret PROJECTS_TOKEN (recommended) or rely on GITHUB_TOKEN.",
+            file=sys.stderr,
+        )
+        return 2
 
     week_value = os.getenv("WEEK", "").strip() or iso_week_string(datetime.date.today())
 
@@ -239,6 +278,7 @@ def main() -> int:
     }
     """
 
+    print(f"Using token source: {token_source}")
     data = gh_graphql(query, {"login": owner, "number": project_number}, token)
     project = (data.get("user") or {}).get("projectV2")
     if not project:
